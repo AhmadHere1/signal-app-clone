@@ -1,10 +1,21 @@
 
 import { StyleSheet, Text, View, StatusBar, Image } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Input } from '@rneui/base'
+import { auth } from '../db/firebase_config';
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged((authUser) => {
+            console.log(authUser)
+            if (authUser) {
+                navigation.navigate('HomeScreen')
+            }
+        }
+        )
+        return unsubscribe
+    }, [])
     const signIn = () => {
 
     }
@@ -31,7 +42,10 @@ const LoginScreen = ({ navigation }) => {
                     value={password}
                     onChangeText={(text) => setPassword(text)}
                 />
-                <Button title="Login" onPress={signIn}
+                <Button title="Login"
+                    onPress={() =>
+                        navigation.navigate('HomeScreen')
+                    }
                     containerStyle={styles.button}
                 />
                 <Button title="Register" type="outline"
